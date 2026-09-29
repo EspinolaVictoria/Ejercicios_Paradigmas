@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- =========================================================
+         CONFIGURACIÓN GENERAL
+         ========================================================= -->
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Juego de Ta Te Ti continuo desarrollado con HTML, CSS y JavaScript."
+    >
+
+    <title>Ta Te Ti | Paradigmas III</title>
+
+    <!-- Hoja de estilos -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+    <!-- =========================================================
+         CONTENEDOR PRINCIPAL
+         ========================================================= -->
+
+    <main class="game" aria-labelledby="game-title">
+
+
+        <!-- =====================================================
+             ENCABEZADO
+             ===================================================== -->
+
+        <header class="game__header">
+
+            <p class="game__subject">
+                Paradigmas y Lenguajes de Programación III
+            </p>
+
+            <h1
+                id="game-title"
+                class="game__title"
+            >
+                Ta Te Ti
+            </h1>
+
+            <p class="game__description">
+                Formá una línea de tres fichas antes que tu rival.
+                Cuando un jugador ya tiene tres fichas en el tablero,
+                su ficha más antigua será reemplazada en su próxima jugada.
+            </p>
+
+        </header>
+
+
+        <!-- =====================================================
+             PANEL DE INFORMACIÓN
+             ===================================================== -->
+
+        <section
+            class="status-panel"
+            aria-label="Información de la partida"
+        >
+
+
+            <!-- Jugador X -->
+
+            <article class="player-card player-card--x">
+
+                <span
+                    class="player-card__symbol"
+                    aria-hidden="true"
+                >
+                    X
+                </span>
+
+                <div class="player-card__info">
+
+                    <h2 class="player-card__name">
+                        Jugador X
+                    </h2>
+
+                    <p
+                        id="pieces-x"
+                        class="player-card__pieces"
+                    >
+                        Fichas activas: 0 / 3
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <!-- Estado central -->
+
+            <article class="match-status">
+
+                <span
+                    id="phase"
+                    class="match-status__phase"
+                >
+                    Partida continua
+                </span>
+
+                <p
+                    id="status"
+                    class="match-status__message"
+                    aria-live="polite"
+                >
+                    Turno del Jugador X
+                </p>
+
+            </article>
+
+
+            <!-- Jugador O -->
+
+            <article class="player-card player-card--o">
+
+                <span
+                    class="player-card__symbol"
+                    aria-hidden="true"
+                >
+                    O
+                </span>
+
+                <div class="player-card__info">
+
+                    <h2 class="player-card__name">
+                        Jugador O
+                    </h2>
+
+                    <p
+                        id="pieces-o"
+                        class="player-card__pieces"
+                    >
+                        Fichas activas: 0 / 3
+                    </p>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- =====================================================
+             TABLERO
+
+             Índices utilizados internamente:
+
+                 0 | 1 | 2
+                ---+---+---
+                 3 | 4 | 5
+                ---+---+---
+                 6 | 7 | 8
+
+             Cada botón representa una casilla.
+             ===================================================== -->
+
+        <section
+            id="board"
+            class="board"
+            aria-label="Tablero de Ta Te Ti"
+        >
+
+            <button
+                class="cell"
+                type="button"
+                data-index="0"
+                aria-label="Casilla 1 vacía"
+            ></button>
+
+            <button
+                class="cell"
+                type="button"
+                data-index="1"
+                aria-label="Casilla 2 vacía"
+            ></button>
+
+            <button
+                class="cell"
+                type="button"
+                data-index="2"
+                aria-label="Casilla 3 vacía"
+            ></button>
+
+            <button
+                class="cell"
+                type="button"
+                data-index="3"
+                aria-label="Casilla 4 vacía"
+            ></button>
+
+            <button
+                class="cell"
+                type="button"
+                data-index="4"
+                aria-label="Casilla 5 vacía"
+            ></button>
+
+            <button
+                class="cell"
+                type="button"
+                data-index="5"
+                aria-label="Casilla 6 vacía"
+            ></button>
+
+            <button
+                class="cell"
+                type="button"
+                data-index="6"
+                aria-label="Casilla 7 vacía"
+            ></button>
+
+            <button
+                class="cell"
+                type="button"
+                data-index="7"
+                aria-label="Casilla 8 vacía"
+            ></button>
+
+            <button
+                class="cell"
+                type="button"
+                data-index="8"
+                aria-label="Casilla 9 vacía"
+            ></button>
+
+        </section>
+
+
+        <!-- =====================================================
+             AYUDA
+             ===================================================== -->
+
+        <section
+            class="help-card"
+            aria-labelledby="help-title"
+        >
+
+            <h2
+                id="help-title"
+                class="help-card__title"
+            >
+                Cómo jugar
+            </h2>
+
+            <p
+                id="help"
+                class="help-card__text"
+            >
+                Seleccioná una casilla vacía para colocar
+                la ficha del Jugador X.
+            </p>
+
+            <p class="help-card__note">
+                Cuando tengas tres fichas activas,
+                la más antigua se marcará antes de ser reemplazada.
+            </p>
+
+        </section>
+
+
+        <!-- =====================================================
+             COMBINACIONES GANADORAS
+
+             Un tablero 3 x 3 posee exactamente:
+             - 3 filas
+             - 3 columnas
+             - 2 diagonales
+
+             Total: 8 líneas ganadoras.
+             ===================================================== -->
+
+        <details class="winning-combinations">
+
+            <summary class="winning-combinations__summary">
+                Ver las líneas ganadoras
+            </summary>
+
+
+            <div class="winning-combinations__content">
+
+
+                <!-- Filas -->
+
+                <section class="winning-group">
+
+                    <h2>Filas</h2>
+
+                    <ol>
+                        <li>
+                            Superior:
+                            1 - 2 - 3
+                        </li>
+
+                        <li>
+                            Central:
+                            4 - 5 - 6
+                        </li>
+
+                        <li>
+                            Inferior:
+                            7 - 8 - 9
+                        </li>
+                    </ol>
+
+                </section>
+
+
+                <!-- Columnas -->
+
+                <section class="winning-group">
+
+                    <h2>Columnas</h2>
+
+                    <ol>
+                        <li>
+                            Izquierda:
+                            1 - 4 - 7
+                        </li>
+
+                        <li>
+                            Central:
+                            2 - 5 - 8
+                        </li>
+
+                        <li>
+                            Derecha:
+                            3 - 6 - 9
+                        </li>
+                    </ol>
+
+                </section>
+
+
+                <!-- Diagonales -->
+
+                <section class="winning-group">
+
+                    <h2>Diagonales</h2>
+
+                    <ol>
+                        <li>
+                            Principal:
+                            1 - 5 - 9
+                        </li>
+
+                        <li>
+                            Secundaria:
+                            3 - 5 - 7
+                        </li>
+                    </ol>
+
+                </section>
+
+            </div>
+
+        </details>
+
+
+        <!-- =====================================================
+             ACCIONES
+             ===================================================== -->
+
+        <div class="game__actions">
+
+            <button
+                id="restart"
+                class="button button--primary"
+                type="button"
+            >
+                Reiniciar partida
+            </button>
+
+        </div>
+
+
+        <!-- =====================================================
+             PIE DE PÁGINA
+             ===================================================== -->
+
+        <footer class="game__footer">
+
+            <p>
+                HTML · CSS · JavaScript Vanilla
+            </p>
+
+        </footer>
+
+
+    </main>
+
+
+    <!-- JavaScript cargado al final del documento -->
+    <script src="app.js"></script>
+
+</body>
+
+</html>
